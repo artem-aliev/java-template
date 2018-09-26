@@ -12,6 +12,37 @@ public class SparseMatrix implements Matrix
   public SparseMatrix(String fileName) {
 
   }
+
+  @Override
+  public double getCell(int r, int c) throws WrongSizeException {
+    return 0;
+  }
+
+  @Override
+  public int getNumbersOfRows() {
+    return 0;
+  }
+
+  @Override
+  public int getNumbersOfColumns() {
+    return 0;
+  }
+
+  @Override
+  public void changeCell(int r, int c, double value) throws WrongSizeException {
+
+  }
+
+  @Override
+  public Matrix add(Matrix o) throws WrongSizeException, WrongSizeMatrixException {
+    return null;
+  }
+
+  @Override
+  public Matrix trans() {
+    return null;
+  }
+
   /**
    * однопоточное умнджение матриц
    * должно поддерживаться для всех 4-х вариантов
