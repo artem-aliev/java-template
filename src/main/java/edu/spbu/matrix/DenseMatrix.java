@@ -19,10 +19,36 @@ public class DenseMatrix implements Matrix
     this.N = N;
     this.data = new double[M][N];
   }
-  public int getNumbersOfRows() {
+  /**
+   * загружает матрицу из файла
+   * @param fileName
+   */
+  public DenseMatrix(String fileName) throws FileNotFoundException {
+      Scanner in = new Scanner((new FileReader(fileName)));
+      String data = "";
+      while (in.hasNext()) {
+          data += in.nextLine() + '\n';
+      }
+      in.close();
+      String[] array = data.split("\n");
+      M = array.length;
+      N = array[0].split(" ").length;
+      this.data = new double[M][N];
+      for(int i = 0; i < M; i++){
+          String[] array2 = array[i].split(" ");
+          for(int j = 0; j< N; j++){
+              try {
+                  changeCell(i, j, Double.parseDouble(array2[j]));
+              } catch (WrongSizeException e) {
+                  e.printStackTrace();
+              }
+          }
+      }
+  }
+  @Override public int getNumbersOfRows() {
       return M;
   }
-  public int getNumbersOfColumns() {
+  @Override public int getNumbersOfColumns() {
       return N;
   }
   @Override public double getCell(int r, int c) throws WrongSizeException{
@@ -31,7 +57,7 @@ public class DenseMatrix implements Matrix
       }
       return data[r][c];
   }
-  public void changeCell(int r, int c, double value)throws WrongSizeException{
+  @Override public void changeCell(int r, int c, double value)throws WrongSizeException{
       if(r >= getNumbersOfRows() || c >= getNumbersOfColumns()){
           throw new WrongSizeException();
       }
@@ -71,56 +97,27 @@ public class DenseMatrix implements Matrix
       return o;
   }
   /**
-   * загружает матрицу из файла
-   * @param fileName
-   */
-  public DenseMatrix(String fileName) throws FileNotFoundException {
-      Scanner in = new Scanner((new FileReader(fileName)));
-      String data = "";
-      while (in.hasNext()) {
-          data += in.nextLine() + '\n';
-      }
-      in.close();
-      String[] array = data.split("\n");
-      M = array.length;
-      N = array[0].split(" ").length;
-      this.data = new double[M][N];
-      for(int i = 0; i < M; i++){
-          String[] array2 = array[i].split(" ");
-          for(int j = 0; j< N; j++){
-              try {
-                  changeCell(i, j, Double.parseDouble(array2[j]));
-              } catch (WrongSizeException e) {
-                  e.printStackTrace();
-              }
-          }
-      }
-  }
-  /**
    * однопоточное умнджение матриц
    * должно поддерживаться для всех 4-х вариантов
    *
    * @param o
    * @return
    */
-  @Override public Matrix mul(Matrix o) throws WrongSizeMatrixException{
+  @Override public Matrix mul(Matrix o) throws WrongSizeMatrixException, WrongSizeException{
       if(o.getNumbersOfRows() != getNumbersOfColumns()){
           throw new WrongSizeMatrixException();
       }
-      DenseMatrix o2 = new DenseMatrix(M, o.getNumbersOfColumns());
+      Matrix o2 = new DenseMatrix(M, o.getNumbersOfColumns());
       for(int i = 0; i < M; i++){
           for(int j = 0; j < o.getNumbersOfColumns(); j++){
               for(int k = 0; k < N; k++) {
-                  try {
-                      o2.changeCell(i, j, o2.getCell(i, j) + (getCell(i, k) * o.getCell(k, j)));
-                  } catch (WrongSizeException e) {
-                      e.printStackTrace();
-                  }
+                  o2.changeCell(i, j, o2.getCell(i, j) + (getCell(i, k) * o.getCell(k, j)));
               }
           }
       }
       return o2;
   }
+
 
   /**
    * многопоточное умножение матриц

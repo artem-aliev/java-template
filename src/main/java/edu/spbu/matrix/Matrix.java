@@ -19,7 +19,7 @@ public interface Matrix
    * @param o
    * @return
    */
-  Matrix mul(Matrix o) throws WrongSizeMatrixException;
+  Matrix mul(Matrix o) throws WrongSizeMatrixException, WrongSizeException;
 
   /**
    * многопоточное умножение матриц

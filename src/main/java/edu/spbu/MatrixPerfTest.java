@@ -36,6 +36,8 @@ public class MatrixPerfTest
       e.printStackTrace();
     } catch (WrongSizeMatrixException e) {
       e.printStackTrace();
+    } catch (WrongSizeException e) {
+      e.printStackTrace();
     }
 
   }

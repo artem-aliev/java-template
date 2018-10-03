@@ -96,8 +96,6 @@ public class MatrixTest {
         } catch (WrongSizeException | WrongSizeMatrixException e) {
             e.printStackTrace();
         }
-
-
     }
     @Test
     public void mulDD2() {
@@ -106,8 +104,43 @@ public class MatrixTest {
             Matrix m2 = new DenseMatrix("m2.txt");
             Matrix expected = new DenseMatrix("result.txt");
             assertEquals(expected, m1.mul(m2));
-        } catch (FileNotFoundException | WrongSizeMatrixException e) {
+        } catch (FileNotFoundException | WrongSizeMatrixException | WrongSizeException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void stringS() throws FileNotFoundException, WrongSizeException {
+        Matrix m = new SparseMatrix("m1.txt");
+        System.out.println(m.toString());
+    }
+    @Test
+    public void  mulDS() throws FileNotFoundException, WrongSizeMatrixException, WrongSizeException {
+        Matrix m3 = new DenseMatrix("m3.txt");
+        Matrix m4 = new SparseMatrix("m4.txt");
+        Matrix expected = new DenseMatrix("result2.txt");
+        assertEquals(expected, m3.mul(m4));
+    }
+
+    @Test
+    public void mulSS() throws FileNotFoundException, WrongSizeMatrixException, WrongSizeException {
+        Matrix m5 = new SparseMatrix("m5.txt");
+        Matrix m6 = new SparseMatrix("m6.txt");
+        Matrix expected = new SparseMatrix("result3.txt");
+        Matrix o = m5.mul(m6);
+        assertEquals(expected, o);
+    }
+    @Test
+    public void mulSD() throws FileNotFoundException, WrongSizeMatrixException, WrongSizeException {
+        Matrix m7 = new SparseMatrix("m7.txt");
+        Matrix m8 = new DenseMatrix("m8.txt");
+        Matrix expected = new DenseMatrix("result4.txt");
+        assertEquals(expected, m7.mul(m8));
+    }
+    @Test
+    public void mulSD_Exception() throws FileNotFoundException, WrongSizeMatrixException, WrongSizeException {
+        Matrix m7 = new SparseMatrix("m7.txt");
+        Matrix m8 = new DenseMatrix("m8.txt");
+        Matrix expected = new DenseMatrix("result5.txt");
+        assertEquals(expected, m7.mul(m8));
     }
 }
