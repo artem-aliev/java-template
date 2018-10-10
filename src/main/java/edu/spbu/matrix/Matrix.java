@@ -8,9 +8,12 @@ public interface Matrix
   double getCell(int r, int c) throws WrongSizeException;
   int getNumbersOfRows();
   int getNumbersOfColumns();
+  int[] getCol();
+  int[] getPointer();
+  double[] getValues();
   void changeCell(int r, int c, double value) throws WrongSizeException;
   Matrix add(Matrix o)throws WrongSizeException, WrongSizeMatrixException;
-  Matrix trans() throws WrongSizeMatrixException;
+  Matrix trans();
   boolean equals(Object o);
   String toString();
   /**

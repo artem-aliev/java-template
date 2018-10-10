@@ -51,7 +51,23 @@ public class DenseMatrix implements Matrix
   @Override public int getNumbersOfColumns() {
       return N;
   }
-  @Override public double getCell(int r, int c) throws WrongSizeException{
+
+    @Override
+    public int[] getCol() {
+        return new int[0];
+    }
+
+    @Override
+    public int[] getPointer() {
+        return new int[0];
+    }
+
+    @Override
+    public double[] getValues() {
+        return new double[0];
+    }
+
+    @Override public double getCell(int r, int c) throws WrongSizeException{
       if(r >= getNumbersOfRows() || c >= getNumbersOfColumns()){
           throw new WrongSizeException();
       }
@@ -79,11 +95,8 @@ public class DenseMatrix implements Matrix
       }
       return o2;
   }
-  @Override public Matrix trans() throws WrongSizeMatrixException{
-      if(M != N){
-          throw new WrongSizeMatrixException();
-      }
-      DenseMatrix o = new DenseMatrix(M, N);
+  @Override public Matrix trans(){
+      DenseMatrix o = new DenseMatrix(N, M);
       for(int i = 0; i < M; i++){
           for(int j = i; j < N; j++){
               try {

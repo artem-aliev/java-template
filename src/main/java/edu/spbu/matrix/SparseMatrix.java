@@ -1,6 +1,5 @@
 package edu.spbu.matrix;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -57,15 +56,11 @@ public class SparseMatrix implements Matrix {
         values =  values_l.stream().mapToDouble(Double::doubleValue).toArray();
         col = col_l.stream().mapToInt(Integer::intValue).toArray();
     }
-    @Override public double getCell(int r, int c) throws WrongSizeException {
-        if(r >= getNumbersOfRows() || c >= getNumbersOfColumns()){
-            throw new WrongSizeException();
-        }
+    @Override public double getCell(int r, int c){
         int point = pointer[r+1] - 1 - pointer[r];
         if(point < 0){
             return 0;
         }
-        System.out.println(Arrays.toString(col));
         int first_col = col[pointer[r]];
         int last_col = col[pointer[r+1]-1];
         if(last_col >= c && c >= first_col) {
@@ -84,6 +79,15 @@ public class SparseMatrix implements Matrix {
     @Override public int getNumbersOfColumns () {
         return N;
     }
+    public int[] getCol(){
+        return col;
+    }
+    public int[] getPointer(){
+        return pointer;
+    }
+    public double[] getValues(){
+        return values;
+    }
     @Override public void changeCell(int r, int c, double value) throws WrongSizeException {
     }
 
@@ -94,7 +98,37 @@ public class SparseMatrix implements Matrix {
 
 
     @Override public Matrix trans() {
-        return null;
+        ArrayList<ArrayList<Double>> values_list = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> col_list = new ArrayList<>();
+        int[] col_o = new int[values.length];
+        double[] values_o = new double[values.length];
+        int[] pointer_o = new int[N+1];
+        int row = 0;
+        int point = 0;
+        for(int i = 0; i < N; i++){
+            values_list.add(new ArrayList<>());
+            col_list.add(new ArrayList<>());
+        }
+        for(int i= 0; i < values.length; i++){
+            if(pointer[row+1] == i){
+                row++;
+            }
+            values_list.get(col[i]).add(values[i]);
+            col_list.get(col[i]).add(row);
+        }
+        for(int i = 0; i < N; i++){
+            pointer_o[i+1] = pointer_o[i] + values_list.get(i).size();
+            if(values_list.get(i).size() != 0){
+                for(int j = 0; j < pointer_o[i+1] - pointer_o[i]; j++){
+                    values_o[point] = values_list.get(i).get(j);
+                    col_o[point] = col_list.get(i).get(j);
+                    point++;
+                }
+            }
+        }
+        Matrix o = new SparseMatrix(N, M, pointer_o, col_o, values_o);
+        return o;
+
     }
 
     /**
@@ -128,36 +162,50 @@ public class SparseMatrix implements Matrix {
         return o2;
     }
 
-    private Matrix mulSS(Matrix o) throws WrongSizeException {
-        boolean the_first = true;
-        int point = 0;
-        int[] pointer = new int [getNumbersOfRows()+1];
+    private Matrix mulSS(Matrix o){
+        o = o.trans();
+        double sum = 0;
+        int left_matr_number = 0;
+        int right_matr_number = 0;
+        int[] pointer_o2 = new int [getNumbersOfRows()+1];
         ArrayList<Double> values_l = new ArrayList<>();
         ArrayList<Integer> col_l = new ArrayList<>();
 
-        for (int i = 0; i < M; i++) {
-            for (int j = 0; j < o.getNumbersOfColumns(); j++) {
-                for (int k = 0; k < N; k++) {
-                    if(getCell(i, k) != 0 && o.getCell(k, j) != 0) {
-                        if(the_first) {
-                            values_l.add(getCell(i, k) * o.getCell(k, j));
-                            the_first = false;
-                            col_l.add(j);
-                            point++;
-                        }
-                        else{
-                            values_l.set(values_l.size()-1, values_l.get(values_l.size()-1) + getCell(i, k) * o.getCell(k, j));
-                            point++;
-                        }
-                    }
+        for(int i = 0; i < pointer.length-1; i++){
+            pointer_o2[i+1] = pointer_o2[i];
+            if(pointer[i+1] - pointer[i] > 0) {
+                for(int j = 0; j < o.getPointer().length-1; j++) {
+                   if(o.getPointer()[j+1] - o.getPointer()[j] > 0){
+                       left_matr_number = pointer[i];
+                       right_matr_number = o.getPointer()[j];
+                       sum = 0;
+                       while(pointer[i+1] > left_matr_number && o.getPointer()[j+1] > right_matr_number){
+                           if(col[left_matr_number] == o.getCol()[right_matr_number]){
+                               sum += values[left_matr_number] * o.getValues()[right_matr_number];
+                               right_matr_number++;
+                               left_matr_number++;
+                           }
+                           else{
+                               if(col[left_matr_number] > o.getCol()[right_matr_number]){
+                                   right_matr_number++;
+                               }
+                               else{
+                                   left_matr_number++;
+                               }
+                           }
+                       }
+                       if(sum != 0){
+                           pointer_o2[i+1]++;
+                           col_l.add(j);
+                           values_l.add(sum);
+                       }
+                   }
                 }
-                the_first = true;
-                pointer[i+1] = point;
             }
         }
-        values =  values_l.stream().mapToDouble(Double::doubleValue).toArray();
-        col = col_l.stream().mapToInt(Integer::intValue).toArray();
-        Matrix o2 = new SparseMatrix(M, o.getNumbersOfColumns(), pointer, col, values);
+        double[] values_o2 =  values_l.stream().mapToDouble(Double::doubleValue).toArray();
+        int [] col_o2 = col_l.stream().mapToInt(Integer::intValue).toArray();
+        Matrix o2 = new SparseMatrix(M, o.getPointer().length-1, pointer_o2, col_o2, values_o2);
         return o2;
     }
 
@@ -185,6 +233,15 @@ public class SparseMatrix implements Matrix {
         if(getNumbersOfRows() != ((Matrix)o).getNumbersOfRows()) {
             return false;
         }
+        if(o instanceof DenseMatrix){
+            return equalsSD(o);
+        }
+        if(o instanceof SparseMatrix){
+            return equalsSS(o);
+        }
+        return false;
+    }
+    private boolean equalsSD(Object o){
         for(int i = 0; i < M; i++) {
             for (int j = 0; j < N; j++) {
                 try {
@@ -193,6 +250,17 @@ public class SparseMatrix implements Matrix {
                     }
                 } catch (WrongSizeException e) {
                     e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean equalsSS(Object o){
+        if(Arrays.equals(pointer, ((Matrix) o).getPointer())){
+            if(Arrays.equals(values, ((Matrix) o).getValues())){
+                if(Arrays.equals(col, ((Matrix) o).getCol())){
+                    return true;
                 }
             }
         }

@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class MatrixTest {
     @Test
@@ -45,10 +46,9 @@ public class MatrixTest {
 
     }
     @Test
-    public void transDD() {
+    public void transD() throws WrongSizeException {
         Matrix m1 = new DenseMatrix(3, 3);
         Matrix result = new DenseMatrix(3, 3);
-        try {
             m1.changeCell(0, 0, 3);
             m1.changeCell(0, 1, 9);
             m1.changeCell(0, 2, 65);
@@ -68,9 +68,6 @@ public class MatrixTest {
             result.changeCell(2, 1, 45);
             result.changeCell(2, 2, -5.8);
             assertEquals(result, m1.trans());
-        } catch (WrongSizeException | WrongSizeMatrixException e) {
-            e.printStackTrace();
-        }
     }
     @Test
     public void mulDD() {
@@ -141,6 +138,11 @@ public class MatrixTest {
         Matrix m7 = new SparseMatrix("m7.txt");
         Matrix m8 = new DenseMatrix("m8.txt");
         Matrix expected = new DenseMatrix("result5.txt");
-        assertEquals(expected, m7.mul(m8));
+        assertFalse(expected.equals(m7.mul(m8)));
+    }
+    @Test
+    public void transS() throws FileNotFoundException{
+        Matrix m6 = new SparseMatrix("m6.txt");
+        System.out.println(m6.trans().toString());
     }
 }
