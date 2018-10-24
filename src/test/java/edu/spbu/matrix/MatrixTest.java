@@ -95,17 +95,6 @@ public class MatrixTest {
         }
     }
     @Test
-    public void mulDD2() {
-        try {
-            Matrix m1 = new DenseMatrix("m1.txt");
-            Matrix m2 = new DenseMatrix("m2.txt");
-            Matrix expected = new DenseMatrix("result.txt");
-            assertEquals(expected, m1.mul(m2));
-        } catch (FileNotFoundException | WrongSizeMatrixException | WrongSizeException e) {
-            e.printStackTrace();
-        }
-    }
-    @Test
     public void stringS() throws FileNotFoundException, WrongSizeException {
         Matrix m = new SparseMatrix("m1.txt");
         System.out.println(m.toString());

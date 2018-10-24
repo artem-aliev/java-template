@@ -110,7 +110,7 @@ public class SparseMatrix implements Matrix {
             col_list.add(new ArrayList<>());
         }
         for(int i= 0; i < values.length; i++){
-            if(pointer[row+1] == i){
+            while(pointer[row+1] <= i){
                 row++;
             }
             values_list.get(col[i]).add(values[i]);
@@ -151,14 +151,34 @@ public class SparseMatrix implements Matrix {
         return null;
     }
     private Matrix mulSD(Matrix o) throws WrongSizeException {
-        Matrix o2 = new DenseMatrix(M, o.getNumbersOfColumns());
-        for(int i = 0; i < M; i++){
-            for(int j = 0; j < o.getNumbersOfColumns(); j++){
-                for(int k = 0; k < N; k++) {
-                    o2.changeCell(i, j, o2.getCell(i, j) + (getCell(i, k) * o.getCell(k, j)));
+        double sum = 0;
+        int left_matr_number = 0;
+        int[] pointer_o2 = new int [getNumbersOfRows()+1];
+        ArrayList<Double> values_l = new ArrayList<>();
+        ArrayList<Integer> col_l = new ArrayList<>();
+
+        for(int i = 0; i < pointer.length-1; i++){
+            pointer_o2[i+1] = pointer_o2[i];
+            if(pointer[i+1] - pointer[i] > 0) {
+                for(int j = 0; j < o.getNumbersOfColumns(); j++) {
+                    left_matr_number = pointer[i];
+                    sum = 0;
+                    while(left_matr_number < pointer[i+1]) {
+                        sum += o.getCell(col[left_matr_number], j) * values[left_matr_number];
+                        left_matr_number++;
+                    }
+                    if(sum != 0){
+                        pointer_o2[i+1]++;
+                        col_l.add(j);
+                        values_l.add(sum);
+                    }
+
                 }
             }
         }
+        double[] values_o2 =  values_l.stream().mapToDouble(Double::doubleValue).toArray();
+        int [] col_o2 = col_l.stream().mapToInt(Integer::intValue).toArray();
+        Matrix o2 = new SparseMatrix(M, o.getNumbersOfColumns(), pointer_o2, col_o2, values_o2);
         return o2;
     }
 

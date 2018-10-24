@@ -120,6 +120,18 @@ public class DenseMatrix implements Matrix
       if(o.getNumbersOfRows() != getNumbersOfColumns()){
           throw new WrongSizeMatrixException();
       }
+      if(o instanceof DenseMatrix){
+          return mulDD(o);
+      }
+      if(o instanceof SparseMatrix){
+          return mulDS(o);
+      }
+      return null;
+  }
+  private Matrix mulDD(Matrix o) throws WrongSizeMatrixException, WrongSizeException{
+      if(N != o.getNumbersOfRows()){
+          throw new WrongSizeMatrixException();
+      }
       Matrix o2 = new DenseMatrix(M, o.getNumbersOfColumns());
       for(int i = 0; i < M; i++){
           for(int j = 0; j < o.getNumbersOfColumns(); j++){
@@ -130,6 +142,38 @@ public class DenseMatrix implements Matrix
       }
       return o2;
   }
+    private Matrix mulDS(Matrix o) throws WrongSizeException {
+        o = o.trans();
+        double sum = 0;
+        int right_matr_number = 0;
+        int[] pointer_o2 = new int [getNumbersOfRows()+1];
+        ArrayList<Double> values_l = new ArrayList<>();
+        ArrayList<Integer> col_l = new ArrayList<>();
+
+        for(int i = 0; i < M; i++){
+            pointer_o2[i+1] = pointer_o2[i];
+            for(int j = 0; j < o.getPointer().length-1; j++) {
+                if(o.getPointer()[j+1] - o.getPointer()[j] > 0) {
+                    right_matr_number = o.getPointer()[j];
+                    sum = 0;
+                    while(right_matr_number < o.getPointer()[j+1]) {
+                        sum += getCell(i, o.getCol()[right_matr_number]) * o.getValues()[right_matr_number];
+                        right_matr_number++;
+                    }
+                    if(sum != 0){
+                        pointer_o2[i+1]++;
+                        col_l.add(j);
+                        values_l.add(sum);
+                    }
+
+                }
+            }
+        }
+        double[] values_o2 =  values_l.stream().mapToDouble(Double::doubleValue).toArray();
+        int [] col_o2 = col_l.stream().mapToInt(Integer::intValue).toArray();
+        Matrix o2 = new SparseMatrix(M, o.getNumbersOfRows(), pointer_o2, col_o2, values_o2);
+        return o2;
+    }
 
 
   /**
