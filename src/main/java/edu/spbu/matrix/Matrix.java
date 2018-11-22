@@ -29,6 +29,6 @@ public interface Matrix
    * @param o
    * @return
    */
-  Matrix dmul(Matrix o);
+  Matrix dmul(Matrix o) throws WrongSizeMatrixException;
 
 }

@@ -2,8 +2,6 @@ package edu.spbu.matrix;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -136,7 +134,7 @@ public class DenseMatrix implements Matrix
       for(int i = 0; i < M; i++){
           for(int j = 0; j < o.getNumbersOfColumns(); j++){
               for(int k = 0; k < N; k++) {
-                  o2.changeCell(i, j, o2.getCell(i, j) + (getCell(i, k) * o.getCell(k, j)));
+                  ((DenseMatrix) o2).data[i][j] +=  data[i][k] * ((DenseMatrix)o).data[k][j];
               }
           }
       }
@@ -182,9 +180,41 @@ public class DenseMatrix implements Matrix
    * @param o
    * @return
    */
-  @Override public Matrix dmul(Matrix o)
-  {
-    return null;
+  @Override public Matrix dmul(Matrix o) throws WrongSizeMatrixException {
+      final int NUMBER_OF_THREADS = 4;
+      if(N != o.getNumbersOfRows()){
+          throw new WrongSizeMatrixException();
+      }
+      Matrix o2 = new DenseMatrix(M, o.getNumbersOfColumns());
+      class MyRunnable implements Runnable {
+          private int index;
+          public MyRunnable(int index) {
+              this.index = index;
+          }
+
+          public void run() {
+              for (int i = (M * index)/NUMBER_OF_THREADS; i < (M * (index+1))/NUMBER_OF_THREADS; i++) {
+                  for (int j = 0; j < o.getNumbersOfColumns(); j++) {
+                      for (int k = 0; k < N; k++) {
+                          ((DenseMatrix) o2).data[i][j] += data[i][k] * ((DenseMatrix) o).data[k][j];
+                      }
+                  }
+              }
+          }
+      }
+      Thread[] thread = new Thread[NUMBER_OF_THREADS];
+      for (int thread_counter = 0; thread_counter < thread.length; thread_counter++) {
+          thread[thread_counter] = new Thread(new MyRunnable(thread_counter));
+          thread[thread_counter].start();
+      }
+      for (int thread_counter = 0; thread_counter < thread.length; thread_counter++) {
+          try {
+              thread[thread_counter].join();
+          } catch (InterruptedException e) {
+              e.printStackTrace();
+          }
+      }
+      return o2;
   }
 
   @Override public String toString() {

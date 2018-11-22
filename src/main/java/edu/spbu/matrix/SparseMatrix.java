@@ -235,7 +235,7 @@ public class SparseMatrix implements Matrix {
      * @param o
      * @return
      */
-    @Override public Matrix dmul(Matrix o) {
+    @Override public Matrix dmul(Matrix o) throws WrongSizeMatrixException {
         return null;
     }
 

@@ -1,14 +1,16 @@
 package edu.spbu.matrix;
 
+import edu.spbu.MatrixGenerator;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 public class MatrixTest {
-    @Test
+/*    @Test
     public void addDD() {
         Matrix m1 = new DenseMatrix(4, 2);
         Matrix m2 = new DenseMatrix(4, 2);
@@ -134,4 +136,121 @@ public class MatrixTest {
         Matrix m6 = new SparseMatrix("m6.txt");
         System.out.println(m6.trans().toString());
     }
+    @Test
+    public void mulDD2() throws FileNotFoundException, WrongSizeMatrixException, WrongSizeException {
+        Matrix m9 = new SparseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        System.out.println(m9.mul(m10));
+    }*/
+    @Test
+    public void muld_1() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 500 X 500: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 500 X 500: "
+                +(time4-time3));
+    }
+    @Test
+    public void muld_2() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 500 X 500: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 500 X 500: "
+                +(time4-time3));
+    }
+    @Test
+    public void muld_3() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 500 X 500: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 500 X 500: "
+                +(time4-time3));
+    }
+    @Test
+    public void muld_4() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 2000 X 2000: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 2000 X 2000: "
+                +(time4-time3));
+    }
+    @Test
+    public void muld_5() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 500 X 500: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 500 X 500: "
+                +(time4-time3));
+    }
+    @Test
+    public void muld_6() throws WrongSizeMatrixException, WrongSizeException, IOException {
+        new MatrixGenerator(1, 10, "9.txt", 500).generate();
+        new MatrixGenerator(2, 10, "10.txt", 500).generate();
+        Matrix m9 = new DenseMatrix("9.txt");
+        Matrix m10 = new DenseMatrix("10.txt");
+        long time3 = System.currentTimeMillis();
+        Matrix Mul = m9.mul(m10);
+        long time4 = System.currentTimeMillis();
+        long time1 = System.currentTimeMillis();
+        Matrix Dmul = m9.dmul(m10);
+        long time2 = System.currentTimeMillis();
+        assertEquals(Mul,Dmul);
+        System.out.println("Время параллельного перемножения матриц размерами 500 X 500: "
+                +(time2-time1));
+        System.out.println("Время обычного перемножения матриц размерами 500 X 500: "
+                +(time4-time3));
+    }
+
+
+
 }
