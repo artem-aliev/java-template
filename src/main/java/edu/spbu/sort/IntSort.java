@@ -8,35 +8,47 @@ import java.util.List;
  * Created by artemaliev on 07/09/15.
  */
 public class IntSort {
-  public static void swap (int x1, int x2)
+  public static void swap (int i, int j, int array[])
   {
-    int temp = x1;
-    x1 = x2;
-    x2 = temp;
+    int temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
   }
 
   public static void sort (int array[])
   {
     int length = array.length;
-    int gap = length;
-    boolean check = true;
-    while(gap>1||check)
-    {
-      if(gap>1)
-      {
-        gap=(int)(gap/1.3);
+    int start = 0;
+    int end = length - 1;
+    qsort(start, end, array);
+  }
+  public static void qsort(int start, int end, int array[])
+  {
+      if (start >= end) {
+          return;
       }
-      check = false;
-      for(int i=0; i<length-gap;i++)
-      {
-        if(array[i]>array[i+gap])
-        {
-          swap(array[i], array[i+gap]);
-          check = true;
-        }
+      int i = start;
+      int j = end;
+      int mid = i - (i - j) / 2;
+      while (i < j) {
+          while (i < mid && (array[i] <= array[mid])) {
+              i++;
+          }
+          while (j > mid && (array[mid] <= array[j])) {
+              j--;
+          }
+          if (i < j) {
+              swap(i,j,array);
+              if (i == mid) {
+                  mid = j;
+              }
+              else if (j == mid) {
+                  mid = i;
+              }
+          }
       }
-    }
-
+      qsort(start, mid, array);
+      qsort(mid+1, end, array);
   }
 
   public static void sort (List<Integer> list) {
