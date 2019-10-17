@@ -63,7 +63,6 @@ public class DenseMatrix implements Matrix {
             DenseMatrix res = new DenseMatrix(resRows, resCols);
             for (int i = 0; i < resRows; i++) {
                 for (int j = 0; j < resCols; j++) {
-                    res.denseMatrix[i][j] = 0;
                     for (int k = 0; k < this.cols; k++) {
                         res.denseMatrix[i][j] += this.denseMatrix[i][k] * m2.denseMatrix[k][j];
                     }
