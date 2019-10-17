@@ -10,10 +10,12 @@ import java.util.Arrays;
 public class DenseMatrix implements Matrix {
     int rows, cols;
     double[][] denseMatrix;
-    private DenseMatrix(int height, int width) {
+
+    public DenseMatrix(int rows, int cols)
+    {
         this.rows = rows;
         this.cols = cols;
-        this.denseMatrix = null;
+        this.denseMatrix = new double [rows][cols];
     }
 
     /**
@@ -26,6 +28,8 @@ public class DenseMatrix implements Matrix {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
             String line = br.readLine();
+            if(line == null){
+                throw new NullPointerException("пустая матрица");}
             String[] values = line.split(" ");
             this.cols = values.length;
             double[] array = Arrays.stream(values).mapToDouble(Double::parseDouble).toArray();
@@ -58,8 +62,8 @@ public class DenseMatrix implements Matrix {
     public Matrix mul(Matrix o) {
         if (o instanceof DenseMatrix) {
             DenseMatrix m2 = (DenseMatrix) o;
-            int resRows = this.rows;
-            int resCols = m2.cols;
+            int resRows = this.getRows();
+            int resCols = m2.getCols();
             DenseMatrix res = new DenseMatrix(resRows, resCols);
             for (int i = 0; i < resRows; i++) {
                 for (int j = 0; j < resCols; j++) {
@@ -113,6 +117,26 @@ public class DenseMatrix implements Matrix {
             }
         }
         return false;
+    }
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        for(int i=0; i<rows;i++) {
+            for (int j = 0; j < cols; j++) {
+                str.append(denseMatrix[i][j]);
+                str.append(" ");
+            }
+            str.append("\n");
+        }
+        return (str.toString());
+    }
+
+    public int getCols(){
+        return this.cols;
+    }
+
+    public int getRows(){
+        return this.rows;
     }
 
 }

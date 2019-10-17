@@ -35,6 +35,16 @@ public class SparseMatrix implements Matrix
     return null;
   }
 
+  @Override
+  public int getCols() {
+    return 0;
+  }
+
+  @Override
+  public int getRows() {
+    return 0;
+  }
+
   /**
    * спавнивает с обоими вариантами
    * @param o
